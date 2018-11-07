@@ -15,7 +15,7 @@ Narrative and most code will go here.  Describe what you are doing and show how 
 
 You can do bullets like this:
 
-* The first most important thing
+* The first most important thing 
 * The second most important thing
 * The third most important thing
 
