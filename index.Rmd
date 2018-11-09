@@ -1,81 +1,25 @@
 ---
-title: "I have the best titles"
-author: Your name here
-subtitle: Subtitle here if desired
+title: Spatial Differences in surface temperature mapping using LANDSAT and weather
+  stations
+author: "Allison Leet"
+subtitle: Phoenix, AZ region
 ---
 
 # Introduction
-My really awesome and complete introduction will go here.  
+> The synergistic nature of urbanization and climate change makes for a warm air mass safe haven in (Luber and McGeehin, 2008). Climate change has been exacerbating the frequency of intense heat waves and co-contributing to raised air temperatures in many urban locations. A high-ranking problematic side effect of excessive heat is public health issues. There is observed causality between heat and health that has negative repercussions for humans (Patz. et al, 2005). Heat-related mortality is highest in comparison to other severe weather-related events and the human body’s reaction anthropogenic heat is equivalent to that of a reaction to naturally occurring extreme heat waves (Davis et. al, 2003). Citizens of cities such as Phoenix and Los Angeles are of the most at-risk populations in the United States due to their existing climate.  
 
-> I know words.  I have the best words.  ~ Donald Trump
 
 # Materials and methods
 
 Narrative and most code will go here.  Describe what you are doing and show how to do it (with code).
 
-You can do bullets like this:
-
-* The first most important thing 
-* The second most important thing
-* The third most important thing
-
-You can do numbers like this:
-
-1. The first most important thing
-2. The second most important thing
-3. The third most important thing
-
-See [http://rmarkdown.rstudio.com/](http://rmarkdown.rstudio.com/) for all the amazing things you can do.
-
 
 Here's my first code chunk.
-```{r}
-1+2
-```
-
-Load any required packages in a code chunk (you may need to install some packages):
-
-```{r, message=F, warning=F}
-library(dplyr)
-library(ggplot2)
-library(maps)
-library(spocc)
-knitr::opts_chunk$set(cache=TRUE)  # cache the results for quick compiling
-```
-
-
-We are going to use the `occ()` function to download _occurrence_ records for the American robin (_Turdus migratorius_) from the [Global Biodiversity Information Facility](gbif.org).
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/Turdus-migratorius-002.jpg" alt="alt text" width="200">
-<small><small><small>Licensed under CC BY-SA 3.0 via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Turdus-migratorius-002.jpg#/media/File:Turdus-migratorius-002.jpg)</small></small></small>
-
-```{r, warning=F} 
-## define which species to query
-sp='Turdus migratorius'
-
-## run the query and convert to data.frame()
-d = occ(query=sp, from='ebird',limit = 100) %>% occ2df()
-```
-This can take a few seconds.
-
-```{r, fig.width=6, fig.height=3, fig.cap="Map illustrating the known occurrence locations"}
-# Load coastline
-map=map_data("world")
-
-ggplot(d,aes(x=longitude,y=latitude))+
-  geom_polygon(aes(x=long,y=lat,group=group),data=map)+
-  geom_point(col="red")+
-  coord_equal()
-```
 
 
 # Results
 
 Show tables, plots, etc. and describe them.
-
-```{r}
-hist(d$latitude)
-```
 
 # Conclusions
 
