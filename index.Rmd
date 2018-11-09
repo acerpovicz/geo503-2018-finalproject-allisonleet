@@ -1,20 +1,23 @@
 ---
-title: Spatial Differences in surface temperature mapping using LANDSAT and weather
-  stations
+title: Spatial Differences in surface temperature mapping using LANDSAT vs. weather stations
 author: "Allison Leet"
-subtitle: Case Study: Phoenix, AZ region
+subtitle: Case Study: Phoenix, AZ
 ---
 
 # Introduction
-> The synergistic nature of urbanization and climate change makes for a warm air mass safe haven in (Luber and McGeehin, 2008). Climate change has been exacerbating the frequency of intense heat waves and co-contributing to raised air temperatures in many urban locations. A high-ranking problematic side effect of excessive heat is public health issues. There is observed causality between heat and health that has negative repercussions for humans (Patz. et al, 2005). Heat-related mortality is highest in comparison to other severe weather-related events and the human body’s reaction anthropogenic heat is equivalent to that of a reaction to naturally occurring extreme heat waves (Davis et. al, 2003). Citizens of cities such as Phoenix and Los Angeles are of the most at-risk populations in the United States due to their existing climate.  
+>The synergistic nature of urbanization and climate change makes for a warm air mass safe haven in (Luber and McGeehin, 2008). Climate change has been exacerbating the frequency of intense heat waves and co-contributing to raised air temperatures in many urban locations. A high-ranking problematic side effect of excessive heat is public health issues. There is observed causality between heat and health that has negative repercussions for humans (Patz. et al, 2005). Heat-related mortality is highest in comparison to other severe weather-related events and the human body’s reaction anthropogenic heat is equivalent to that of a reaction to naturally occurring extreme heat waves (Davis et. al, 2003). Citizens of cities such as Phoenix and Los Angeles are of the most at-risk populations in the United States due to their existing climate.  
 
 
 # Materials and methods
 
-Narrative and most code will go here.  Describe what you are doing and show how to do it (with code).
+>A land surface temperature image can be derived from either a single LANDSAT image using several algorithms that process the thermal bands of the image or by accessing the weather data from a specific station. Here we are examining the accuracy of the Phoenix Airport weather station in comparison to two LANDSAT images from the month of July 2018, an excessively warm month in the Southwest United States. The weather station data is accesibile from 'rnoaa' package within R. The processing of a LANDSAT image requires manipulation of a downloaded image within R to convert the thermal bands into a land surface temperature image. The process involves inclusion of NDVI (normalized difference vegetation index) and emissivity of the Earth's surface in estimation of land surface temperature to improve accuracy.The steps are as follows:
+1. Download appropriate LANDSAT images from the USGS Earth Explorer and set a working directory for R to grab the Band images from
+2. Convert Digital Numbers (DN) to Top of Atmosphere(TOA) Spectral Radiance using:
+  + Band_10 thermal image
+  + RADIANCE_MULT_BAND_10 value
+  + RADIANCE_ADD_BAND_10 value
+  + (the Radiance values come from the image's corresponding Metadata (MTL) file. 
 
-
-Here's my first code chunk.
 
 
 # Results
