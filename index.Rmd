@@ -15,13 +15,13 @@ subtitle: 'Case Study: Phoenix, AZ'
 The steps are as follows:
 1. Download appropriate LANDSAT images from the USGS Earth Explorer and set a working directory from which R will obtain the Band images.
 ```{r}
-setwd("C:/Users/Allison/Desktop/School/R Data Science/geo503-2018-finalproject-allisonleet/data")
+setwd("C:/Users/Allison/Desktop/School/R Data Science/geo503-2018-finalproject-allisonleet")
 ```
 2. Convert Digital Numbers (DN) to Top of Atmosphere(TOA) Spectral Radiance using:
   + Band_10 thermal image
   + RADIANCE_MULT_BAND_10 value
   + RADIANCE_ADD_BAND_10 value
-  + (the Radiance values come from the image's corresponding Metadata (MTL) file
+  ***the Radiance values come from the image's corresponding Metadata (MTL) file***
 ```{r}
 RADIANCE_MULT_BAND_10 <- 3.3420E-04 
 RADIANCE_ADD_BAND_10 <- 0.10000 
