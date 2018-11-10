@@ -6,40 +6,48 @@ subtitle: 'Case Study: Phoenix, AZ'
 ---
 
 # Introduction
->The synergistic nature of urbanization and climate change makes for a warm air mass safe haven in (Luber and McGeehin, 2008). Climate change has been exacerbating the frequency of intense heat waves and co-contributing to raised air temperatures in many urban locations. A high-ranking problematic side effect of excessive heat is public health issues. There is observed causality between heat and health that has negative repercussions for humans (Patz. et al, 2005). Heat-related mortality is highest in comparison to other severe weather-related events and the human body’s reaction anthropogenic heat is equivalent to that of a reaction to naturally occurring extreme heat waves (Davis et. al, 2003). Citizens of cities such as Phoenix and Los Angeles are of the most at-risk populations in the United States due to their existing climate.  
+The synergistic nature of urbanization and climate change makes for a warm air mass safe haven in (Luber and McGeehin, 2008). Climate change has been exacerbating the frequency of intense heat waves and co-contributing to raised air temperatures in many urban locations. A high-ranking problematic side effect of excessive heat is public health issues. There is observed causality between heat and health that has negative repercussions for humans (Patz. et al, 2005). Heat-related mortality is highest in comparison to other severe weather-related events and the human body’s reaction anthropogenic heat is equivalent to that of a reaction to naturally occurring extreme heat waves (Davis et. al, 2003). Citizens of cities such as Phoenix and Los Angeles are of the most at-risk populations in the United States due to their existing climate.  
 
 
 # Materials and methods
 
->A land surface temperature image can be derived from either a single LANDSAT image using several algorithms that process the thermal bands of the image or by accessing the weather data from a specific station. Here we are examining the accuracy of the Phoenix Airport weather station in comparison to two LANDSAT images from the month of July 2018, an excessively warm month in the Southwest United States. The weather station data is accesibile from 'rnoaa' package within R. The processing of a LANDSAT image requires manipulation of a downloaded image within R to convert the thermal bands into a land surface temperature image. The process involves inclusion of NDVI (normalized difference vegetation index) and emissivity of the Earth's surface in estimation of land surface temperature to improve accuracy.Instructions can be found [here](http://www.gis-blog.com/calculation-of-land-surface-temperature-lst-from-landsat-8-using-r/).
+##LANDSAT image to Land Surface Temoerature
+A land surface temperature image can be derived from either a single LANDSAT image using several algorithms that process the thermal bands of the image or by accessing the weather data from a specific station. Here we are examining the accuracy of the Phoenix Airport weather station in comparison to two LANDSAT images from the month of July 2018, an excessively warm month in the Southwest United States. The weather station data is accesibile from 'rnoaa' package within R. The processing of a LANDSAT image requires manipulation of a downloaded image within R to convert the thermal bands into a land surface temperature image. The process involves inclusion of NDVI (normalized difference vegetation index) and emissivity of the Earth's surface in estimation of land surface temperature to improve accuracy.Instructions can be found [here](http://www.gis-blog.com/calculation-of-land-surface-temperature-lst-from-landsat-8-using-r/).
+
 The steps are as follows:
+
 1. Download appropriate LANDSAT images from the USGS Earth Explorer and set a working directory from which R will obtain the Band images.
+
 2. Convert Digital Numbers (DN) to Top of Atmosphere(TOA) Spectral Radiance using:
   + Band_10 thermal image
   + RADIANCE_MULT_BAND_10 value
   + RADIANCE_ADD_BAND_10 value
-  ***the Radiance values come from the image's corresponding Metadata (MTL) file***
-```{r}
+
+The Radiance values come from the image's corresponding Metadata (MTL) file
+```
 RADIANCE_MULT_BAND_10 <- 3.3420E-04 
 RADIANCE_ADD_BAND_10 <- 0.10000 
-band_10 = raster("Band10.tif") #change image name accordingly
+band_10 = raster("Band_10") #change image name accordingly
 toa_band10 <- calc(band_10, fun=function(x){RADIANCE_MULT_BAND_10 * x + RADIANCE_ADD_BAND_10})
 ```
 3. Convert Reflectance to At-Satellite Brightness Tempearture in Celcius using:
   + K1_CONSTANT_BAND_10 <- 774.8853
   + K2_CONSTANT_BAND_10 <- 1321.0789
   + toa_band10
-```{r}
+  
+```
 temp10_kelvin <- calc(toa_band10, fun=function(x){K2_CONSTANT_BAND_10/log(K1_CONSTANT_BAND_10/x + 1)})
 temp10_celsius <- calc(temp10_kelvin, fun=function(x){x - 273.15})
 ```
-5. Convert At-Satellite Brightness Temperature to Land Surface Temperature and export using:
+
+4. Convert At-Satellite Brightness Temperature to Land Surface Temperature and export using:
   + Band_2 Thermal image
   + Cloud mask based on band 2 : band 10 threshold over clouds
   + NDVI using bands 4 and 5
   + Proportion vegetation based on NDVI
   + Emissivity (e)
-```{r}
+  
+```
 band_2 = raster("Band2.tif") #change image name accordingly
 threshold <- band_2/band_10  #Calculate threshold for cloud mask
 clouds(band_2, band_10, level = 0.65, buffer = 5)
@@ -50,9 +58,35 @@ Pv <- ((NDVI - (-1)) / (1 - (-1)))^2
 e <- 0.004 * Pv + 0.986
 LST10_cel <- temp10_celsius/(1 + (10.8 * (temp10_celsius/14380) * log(e)))
 writeRaster(temp10_celsius, "temp10_c.tif")
+```
 
-Show tables, plots, etc. and describe them.
+##Accessing Phoenix, AZ Airport NOAA Weather Station Data for July 2018
+NOAA weather station data can be obtained directly from the rnoaa package and filtered down to desired locations, dates and variables. Here I tap into rnoaa's database, filter for the PHX airport weather station, July 2018 and only Maximum Daily Temperature.
 
+```
+ghcnd_search("USW00023183", date_min = "2018-07-01", date_max = "2018-07-31", var = "all")
+Tmax_PHX <- ghcnd_search("USW00023183", date_min = "2018-07-01", date_max = "2018-07-31", var = "TMAX")
+```
+The results are plotted thus far as a scatterplot.
+```{r, echo=FALSE}
+library(FedData)
+library(rnoaa)
+library(ggplot2)
+library(sp)
+library(raster)
+library(dplyr)
+library(sf)
+library(spData)
+Tmax_PHX <- ghcnd_search("USW00023183", date_min = "2018-07-01", date_max = "2018-07-31", var = "TMAX")
+Tmax_PHX_df <- as.data.frame(Tmax_PHX)
+Tmax_PHX_mutate <- Tmax_PHX_df %>% 
+  mutate(tmax = tmax.tmax/10)
+plot(Tmax_PHX_mutate$tmax.date, Tmax_PHX_mutate$tmax,
+     xlab="July 2018",
+     ylab="Maximum Temperature Phoenix, AZ Airport Station",
+     main="Maximum Temperature by day",
+     col="red")
+```
 # Conclusions
 
 What have you learned?  Are there any broader implications?
