@@ -4,12 +4,12 @@ title: Spatial Differences in surface temperature mapping using LANDSAT vs. weat
 author: "Allison Leet"
 subtitle: 'Case Study: Phoenix, AZ'
 ---
-
-# Introduction
+   
+# Introduction 
 The synergistic nature of urbanization and climate change makes for a warm air mass safe haven in (Luber and McGeehin, 2008). Climate change has been exacerbating the frequency of intense heat waves and co-contributing to raised air temperatures in many urban locations. A high-ranking problematic side effect of excessive heat is public health issues. There is observed causality between heat and health that has negative repercussions for humans (Patz. et al, 2005). Heat-related mortality is highest in comparison to other severe weather-related events and the human body’s reaction anthropogenic heat is equivalent to that of a reaction to naturally occurring extreme heat waves (Davis et. al, 2003). Citizens of cities such as Phoenix and Los Angeles are of the most at-risk populations in the United States due to their existing climate.  
 
 
-# Materials and methods
+# Materials and methods 
 
 ##LANDSAT image to Land Surface Temoerature
 A land surface temperature image can be derived from either a single LANDSAT image using several algorithms that process the thermal bands of the image or by accessing the weather data from a specific station. Here we are examining the accuracy of the Phoenix Airport weather station in comparison to two LANDSAT images from the month of July 2018, an excessively warm month in the Southwest United States. The weather station data is accesibile from 'rnoaa' package within R. The processing of a LANDSAT image requires manipulation of a downloaded image within R to convert the thermal bands into a land surface temperature image. The process involves inclusion of NDVI (normalized difference vegetation index) and emissivity of the Earth's surface in estimation of land surface temperature to improve accuracy.Instructions can be found [here](http://www.gis-blog.com/calculation-of-land-surface-temperature-lst-from-landsat-8-using-r/).
@@ -40,7 +40,7 @@ temp10_kelvin <- calc(toa_band10, fun=function(x){K2_CONSTANT_BAND_10/log(K1_CON
 temp10_celsius <- calc(temp10_kelvin, fun=function(x){x - 273.15})
 ```
 
-4. Convert At-Satellite Brightness Temperature to Land Surface Temperature and export using:
+4. Convert At-Satellite Brightness Temperature to Land Surface Temperature and export using: 
   + Band_2 Thermal image
   + Cloud mask based on band 2 : band 10 threshold over clouds
   + NDVI using bands 4 and 5
@@ -60,14 +60,14 @@ LST10_cel <- temp10_celsius/(1 + (10.8 * (temp10_celsius/14380) * log(e)))
 writeRaster(temp10_celsius, "temp10_c.tif")
 ```
 
-##Accessing Phoenix, AZ Airport NOAA Weather Station Data for July 2018
+##Accessing Phoenix, AZ Airport NOAA Weather Station Data for July 2018 
 NOAA weather station data can be obtained directly from the rnoaa package and filtered down to desired locations, dates and variables. Here I tap into rnoaa's database, filter for the PHX airport weather station, July 2018 and only Maximum Daily Temperature.
 
 ```
 ghcnd_search("USW00023183", date_min = "2018-07-01", date_max = "2018-07-31", var = "all")
 Tmax_PHX <- ghcnd_search("USW00023183", date_min = "2018-07-01", date_max = "2018-07-31", var = "TMAX")
 ```
-The results are plotted thus far as a scatterplot.
+The results are plotted thus far as a scatterplot. 
 ```{r, echo=FALSE}
 library(FedData)
 library(rnoaa)
